@@ -124,10 +124,18 @@ export class EnvParser {
     });
     if (this.absolutePath) {
       const examplePath = this.absolutePath.replace(".env", ".env.example");
-      fs.writeFile(examplePath, fileContent.trim(), (err) => {
-        if (err) throw err;
-        console.log(`✅ Example file created at: ${examplePath}`);
-      });
+      fs.writeFile(
+        examplePath,
+        fileContent.trim(),
+        {
+          encoding: "utf8",
+          flag: "w+",
+        },
+        (err) => {
+          if (err) throw err;
+          console.log(`✅ Example file created at: ${examplePath}`);
+        },
+      );
     }
   };
 
