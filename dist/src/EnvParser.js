@@ -117,7 +117,7 @@ class EnvParser {
             if (lineSpace < 0)
                 throw new ParserError_1.ParserError("lineSpace cannot be less than 0");
             for (let i = 0; i < lineSpace; i++) {
-                spaces += "\n";
+                spaces += "\r";
             }
             Object.keys(envMap).forEach((key) => {
                 fileContent += this.isComment(key)
