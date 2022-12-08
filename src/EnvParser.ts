@@ -97,7 +97,7 @@ export class EnvParser {
   };
 
   private isComment = (line: string) => {
-    return line.trim().startsWith("#") && line.split("#")[1].trim() != "ignore";
+    return line.trim().startsWith("#");
   };
 
   private cleanEmptySpaces = (lines: Array<string>) => {
@@ -115,14 +115,20 @@ export class EnvParser {
       lines = this.cleanComments(lines);
     }
     const env: IParsedData = {};
-    lines.forEach((line) => {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
       const [key, _] = line.split("=");
+      if (key.trim() == "@ignore") {
+        // bad way to implement this, but it is what it is
+        i++;
+        continue;
+      }
       env[key] = this.options?.emptyValue
         ? ""
         : this.isComment(line)
         ? ""
         : `${this.options?.slug}_${key}`;
-    });
+    }
     return env;
   };
 
@@ -137,12 +143,7 @@ export class EnvParser {
     const keys = Object.keys(envMap);
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i];
-      if (
-        key.split("#")[1]?.trim() == "ignore" ||
-        key?.trim() == "" ||
-        key?.trim() == "\r" ||
-        key?.trim() == "\n"
-      ) {
+      if (key?.trim() == "" || key?.trim() == "\r" || key?.trim() == "\n") {
         i++;
       } else {
         fileContent += this.isComment(key)
