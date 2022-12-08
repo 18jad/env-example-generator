@@ -130,4 +130,15 @@ export class EnvParser {
       });
     }
   };
+
+  public parse = (path: string) => {
+    this.verify(path)
+      .then(async (resolvedPath) => {
+        const parsedResult = this.parseEnv(resolvedPath);
+        this.writeExample(parsedResult);
+      })
+      .catch((error) => {
+        throw new ParserError(error.message);
+      });
+  };
 }
