@@ -99,7 +99,7 @@ export class EnvParser {
   };
 
   private isComment = (line: string) => {
-    return line.trim().startsWith("#");
+    return line.trim().startsWith("#") && line.split("#")[1].trim() != "ignore";
   };
 
   private cleanEmptySpaces = (lines: Array<string>) => {
