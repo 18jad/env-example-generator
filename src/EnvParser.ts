@@ -129,7 +129,7 @@ export class EnvParser {
   private writeExample = (envMap: IParsedData) => {
     let fileContent = "";
     let lineSpace = this.options?.lineSpace ? this.options?.lineSpace : 1,
-      spaces = "\r"; // \r to avoid characters errors
+      spaces = "\n"; // \r to avoid characters errors
     if (lineSpace < 0) throw new ParserError("lineSpace cannot be less than 0");
     for (let i = 0; i < lineSpace; i++) {
       spaces += "\r";
