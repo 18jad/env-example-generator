@@ -31,14 +31,23 @@ export class EnvParser {
     };
   }
 
-  private checkPath = (path: string) => {
-    if (!path) {
-      throw new ParserError("Path is empty");
-    }
-    if (!fs.existsSync(path)) {
-      throw new ParserError(`Path: "${this.absolutePath}" does not exist`);
-    }
-    return true;
+  private checkPath = (path: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      if (!path || path == "") {
+        const currentDir = `${p.resolve(".")}\\.env`;
+        if (this.checkFile(currentDir)) {
+          resolve(currentDir);
+        }
+        reject(new ParserError("Path is empty"));
+      } else {
+        if (!fs.existsSync(path)) {
+          reject(
+            new ParserError(`Path: "${this.absolutePath}" does not exist`),
+          );
+        }
+      }
+      resolve(path);
+    });
   };
 
   private checkFile = (path: string) => {
@@ -68,11 +77,21 @@ export class EnvParser {
       this.path = path;
       try {
         this.absolutePath = p.resolve(path);
-        this.checkPath(path);
-        this.checkFile(path);
-        this.checkExtension(path);
-        this.checkFileContent(path);
-        resolve(this.absolutePath);
+        this.checkPath(path)
+          .then((resolvedPath: string) => {
+            this.checkFile(resolvedPath);
+            this.checkExtension(resolvedPath);
+            this.checkFileContent(resolvedPath);
+            this.absolutePath = resolvedPath;
+          })
+          .then(() => {
+            if (this.absolutePath == null)
+              throw new ParserError("Path is null");
+            resolve(this.absolutePath);
+          })
+          .catch((error) => {
+            throw new ParserError(error.message);
+          });
       } catch (error) {
         reject(error);
       }
@@ -120,8 +139,12 @@ export class EnvParser {
     const keys = Object.keys(envMap);
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i];
-      // ignore line and next line
-      if (key.split("#")[1]?.trim() == "ignore") {
+      if (
+        key.split("#")[1]?.trim() == "ignore" ||
+        key?.trim() == "" ||
+        key?.trim() == "\r" ||
+        key?.trim() == "\n"
+      ) {
         i++;
       } else {
         fileContent += this.isComment(key)
@@ -149,7 +172,7 @@ export class EnvParser {
 
   public parse = (path: string) => {
     this.verify(path)
-      .then(async (resolvedPath) => {
+      .then((resolvedPath) => {
         const parsedResult = this.parseEnv(resolvedPath);
         this.writeExample(parsedResult);
       })
