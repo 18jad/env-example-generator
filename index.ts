@@ -28,4 +28,4 @@ const envParserOptions: IEnvParserOptions = {
 
 const parser = new EnvParser(envParserOptions);
 
-parser.parse(options.path);
+parser.parse(options.path || "");
