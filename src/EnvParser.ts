@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as p from "path";
 import { ParserError } from "./ParserError";
 
 export interface IEnvParserOptions {
@@ -56,5 +57,21 @@ export class EnvParser {
       throw new ParserError("File is empty");
     }
     return true;
+  };
+
+  private verify = (path: string) => {
+    return new Promise<string>((resolve, reject) => {
+      this.path = path;
+      try {
+        this.absolutePath = p.resolve(path);
+        this.checkPath(path);
+        this.checkFile(path);
+        this.checkExtension(path);
+        this.checkFileContent(path);
+        resolve(this.absolutePath);
+      } catch (error) {
+        reject(error);
+      }
+    });
   };
 }
