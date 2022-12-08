@@ -74,4 +74,16 @@ export class EnvParser {
       }
     });
   };
+
+  private isComment = (line: string) => {
+    return line.trim().startsWith("#");
+  };
+
+  private cleanEmptySpaces = (lines: Array<string>) => {
+    return lines.filter((line) => line != "\r");
+  };
+
+  private cleanComments = (lines: Array<string>) => {
+    return lines.filter((line) => !this.isComment(line));
+  };
 }
