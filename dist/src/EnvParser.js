@@ -113,7 +113,7 @@ class EnvParser {
         this.writeExample = (envMap) => {
             var _a, _b;
             let fileContent = "";
-            let lineSpace = ((_a = this.options) === null || _a === void 0 ? void 0 : _a.lineSpace) ? (_b = this.options) === null || _b === void 0 ? void 0 : _b.lineSpace : 1, spaces = "\n";
+            let lineSpace = ((_a = this.options) === null || _a === void 0 ? void 0 : _a.lineSpace) ? (_b = this.options) === null || _b === void 0 ? void 0 : _b.lineSpace : 1, spaces = "\r"; // \r to avoid characters errors
             if (lineSpace < 0)
                 throw new ParserError_1.ParserError("lineSpace cannot be less than 0");
             for (let i = 0; i < lineSpace; i++) {
@@ -121,7 +121,7 @@ class EnvParser {
             }
             Object.keys(envMap).forEach((key) => {
                 fileContent += this.isComment(key)
-                    ? `${key}${spaces}`
+                    ? `${key}`
                     : `${key}=${envMap[key]}${spaces}`;
             });
             if (this.absolutePath) {

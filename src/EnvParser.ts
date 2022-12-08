@@ -63,7 +63,7 @@ export class EnvParser {
     return true;
   };
 
-  private verify = (path: string) => {
+  private verify = (path: string): Promise<string> => {
     return new Promise<string>((resolve, reject) => {
       this.path = path;
       try {
@@ -112,7 +112,7 @@ export class EnvParser {
   private writeExample = (envMap: IParsedData) => {
     let fileContent = "";
     let lineSpace = this.options?.lineSpace ? this.options?.lineSpace : 1,
-      spaces = "\n";
+      spaces = "\r"; // \r to avoid characters errors
     if (lineSpace < 0) throw new ParserError("lineSpace cannot be less than 0");
     for (let i = 0; i < lineSpace; i++) {
       spaces += "\r";
