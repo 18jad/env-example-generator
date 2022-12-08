@@ -1,6 +1,6 @@
 export class ParserError extends Error {
   constructor(message: string) {
-    super(message);
+    super(`❌ ${message}`);
     this.name = "ParserError";
   }
 }
