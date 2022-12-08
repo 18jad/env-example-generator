@@ -1,9 +1,6 @@
 {
   "name": "enveg",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/18jad/enveg.git"
-  },
+  "repository": "github:18jad/enveg",
   "version": "0.0.11",
   "description": "A simple generator to generate environment variables example file.",
   "main": "dist/index.js",
@@ -19,9 +16,19 @@
     "build": "rm -rf dist/ && npm run build:esm",
     "build:esm": "tsc"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "env",
+    ".env",
+    "environment",
+    "variables",
+    "example",
+    "generator",
+    "enveg",
+    ".env.example",
+    "dotenv"
+  ],
+  "author": "Jad Yahya",
+  "license": "MIT",
   "dependencies": {
     "commander": "^9.4.1",
     "ts-node": "^10.9.1",
