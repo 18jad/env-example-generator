@@ -8,8 +8,8 @@ Generate your .env example faster and easier 🚀
 
 <table align="center">
 <tr>
-<th>ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ.envㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</th>
-<th>ㅤㅤㅤㅤㅤㅤㅤㅤㅤ.env.example (after parsing)ㅤㅤㅤㅤㅤㅤㅤㅤㅤ</th>
+<th>ㅤㅤㅤㅤㅤㅤㅤㅤㅤ.envㅤㅤㅤㅤㅤㅤㅤㅤㅤ</th>
+<th>ㅤㅤㅤㅤㅤㅤ.env.example (after parsing)ㅤㅤㅤㅤㅤㅤ</th>
 </tr>
 <tr>
 <td>
