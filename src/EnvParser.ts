@@ -132,7 +132,7 @@ export class EnvParser {
       spaces = "\n"; // \r to avoid characters errors
     if (lineSpace < 0) throw new ParserError("lineSpace cannot be less than 0");
     for (let i = 0; i < lineSpace; i++) {
-      spaces += "\r";
+      spaces += "\n";
     }
     const keys = Object.keys(envMap);
     for (let i = 0; i < keys.length; ++i) {
