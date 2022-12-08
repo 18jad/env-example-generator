@@ -18,6 +18,8 @@ export class EnvParser {
   public absolutePath: string | null;
   public fileContent: string | null;
   public options: IEnvParserOptions;
+  private readonly extension: string = ".env";
+  private readonly saveAs: string = ".env.example";
 
   constructor(options?: IEnvParserOptions) {
     this.path = null;
@@ -34,7 +36,7 @@ export class EnvParser {
   private checkPath = (path: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       if (!path || path == "") {
-        const currentDir = `${p.resolve(".")}\\.env`;
+        const currentDir = `${p.resolve(".")}\\${this.extension}`;
         if (this.checkFile(currentDir)) {
           resolve(currentDir);
         }
@@ -118,8 +120,8 @@ export class EnvParser {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const [key, _] = line.split("=");
+      // bad way to implement this, but it is what it is
       if (key.trim() == "@ignore") {
-        // bad way to implement this, but it is what it is
         i++;
         continue;
       }
@@ -135,7 +137,7 @@ export class EnvParser {
   private writeExample = (envMap: IParsedData) => {
     let fileContent = "";
     let lineSpace = this.options?.lineSpace ? this.options?.lineSpace : 1,
-      spaces = "\r\n"; // \n to avoid characters errors
+      spaces = "\r\n"; // \r\n to avoid characters errors
     if (lineSpace < 0) throw new ParserError("lineSpace cannot be less than 0");
     for (let i = 0; i < lineSpace; i++) {
       spaces += "\r\n";
@@ -156,7 +158,10 @@ export class EnvParser {
       // check if this.absolutePath is absolute path
       if (!p.isAbsolute(this.absolutePath))
         this.absolutePath = p.resolve(this.absolutePath);
-      const examplePath = this.absolutePath.replace(".env", ".env.example");
+      const examplePath = this.absolutePath.replace(
+        this.extension,
+        this.saveAs,
+      );
       fs.writeFile(
         examplePath,
         fileContent.trim(),

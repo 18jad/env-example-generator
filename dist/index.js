@@ -18,4 +18,4 @@ const envParserOptions = {
     slug: options.slug || "YOUR",
 };
 const parser = new EnvParser_1.EnvParser(envParserOptions);
-parser.parse(options.path);
+parser.parse(options.path || "");
