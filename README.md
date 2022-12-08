@@ -1,4 +1,4 @@
-# Enveg (Env example generator aka Env e.g)
+# Enveg (Env Example Generator)
 
 Generate your .env example faster and easier 🚀
 
