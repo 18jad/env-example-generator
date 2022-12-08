@@ -42,4 +42,11 @@ export class EnvParser {
     }
     return true;
   };
+
+  private checkExtension = (path: string) => {
+    if (path.split(".").pop() !== "env") {
+      throw new ParserError(`Path: "${this.absolutePath}" is not a .env file`);
+    }
+    return true;
+  };
 }
