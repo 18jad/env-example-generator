@@ -4,7 +4,7 @@
   "description": "Example generator for .env files",
   "main": "index.ts",
   "bin": {
-    "eeg": "index.ts"
+    "enveg": "index.ts"
   },
   "scripts": {
     "start": "ts-node index.ts",
