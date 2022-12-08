@@ -38,12 +38,10 @@ export class EnvParser {
         if (this.checkFile(currentDir)) {
           resolve(currentDir);
         }
-        reject(new ParserError("Path is empty"));
+        reject("Path is empty");
       } else {
         if (!fs.existsSync(path)) {
-          reject(
-            new ParserError(`Path: "${this.absolutePath}" does not exist`),
-          );
+          reject(`Path: "${this.absolutePath}" does not exist`);
         }
       }
       resolve(path);
@@ -90,7 +88,7 @@ export class EnvParser {
             resolve(this.absolutePath);
           })
           .catch((error) => {
-            throw new ParserError(error.message);
+            throw new ParserError(error);
           });
       } catch (error) {
         reject(error);
