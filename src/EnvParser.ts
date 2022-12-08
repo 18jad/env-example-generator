@@ -35,4 +35,11 @@ export class EnvParser {
     }
     return true;
   };
+
+  private checkFile = (path: string) => {
+    if (!fs.lstatSync(path).isFile()) {
+      throw new ParserError(`Path: "${this.absolutePath}" is not a file`);
+    }
+    return true;
+  };
 }
