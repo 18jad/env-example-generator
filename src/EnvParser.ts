@@ -9,6 +9,10 @@ export interface IEnvParserOptions {
   slug?: string;
 }
 
+interface IParsedData {
+  [key: string]: string;
+}
+
 export class EnvParser {
   public path: string | null;
   public absolutePath: string | null;
@@ -85,5 +89,23 @@ export class EnvParser {
 
   private cleanComments = (lines: Array<string>) => {
     return lines.filter((line) => !this.isComment(line));
+  };
+
+  private parseEnv = (path: string) => {
+    const fileContent: string = fs.readFileSync(path, "utf8");
+    let lines: Array<string> = this.cleanEmptySpaces(fileContent.split("\n"));
+    if (!this.options?.comments) {
+      lines = this.cleanComments(lines);
+    }
+    const env: IParsedData = {};
+    lines.forEach((line) => {
+      const [key, _] = line.split("=");
+      env[key] = this.options?.emptyValue
+        ? ""
+        : this.isComment(line)
+        ? ""
+        : `${this.options?.slug}_${key}`;
+    });
+    return env;
   };
 }
