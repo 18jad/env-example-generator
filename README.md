@@ -4,7 +4,7 @@ Generate your .env example faster and easier 🚀
 
 # Demo 
 
-<img src="https://user-images.githubusercontent.com/74220144/206539193-99ba8398-70e3-4dfb-8149-c6d2858da554.gif" width="100%" />
+<img src="https://user-images.githubusercontent.com/74220144/206572108-a2378768-6a01-47bd-84b0-27fb454bcf25.gif" width="100%" />
 
 <table align="center">
 <tr>
@@ -15,6 +15,7 @@ Generate your .env example faster and easier 🚀
 <td>
 
 ```env
+
 
 # VERSION 1 OF API KEY
 API_KEY_V1 = "KEY_XXXX_XXX_XXX"
