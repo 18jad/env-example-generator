@@ -154,6 +154,9 @@ export class EnvParser {
     }
 
     if (this.absolutePath) {
+      // check if this.absolutePath is absolute path
+      if (!p.isAbsolute(this.absolutePath))
+        this.absolutePath = p.resolve(this.absolutePath);
       const examplePath = this.absolutePath.replace(".env", ".env.example");
       fs.writeFile(
         examplePath,
