@@ -119,7 +119,7 @@ export class EnvParser {
     }
     Object.keys(envMap).forEach((key) => {
       fileContent += this.isComment(key)
-        ? `${key}${spaces}`
+        ? `${key}`
         : `${key}=${envMap[key]}${spaces}`;
     });
     if (this.absolutePath) {
