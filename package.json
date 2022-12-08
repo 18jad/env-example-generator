@@ -1,15 +1,23 @@
 {
-  "name": "env-example-generator",
-  "version": "1.0.0",
-  "description": "Example generator for .env files",
-  "main": "index.ts",
-  "bin": {
-    "enveg": "index.ts"
+  "name": "enveg",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/18jad/enveg.git"
   },
+  "version": "0.0.1",
+  "description": "A simple generator to generate environment variables example file.",
+  "main": "dist/index.js",
+  "bin": {
+    "enveg": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "start": "ts-node index.ts",
     "start:dev": "nodemon --watch . --exec ts-node index.ts",
-    "build": "tsc -p ."
+    "build": "rm -rf dist/ && npm run build:esm",
+    "build:esm": "tsc"
   },
   "keywords": [],
   "author": "",
