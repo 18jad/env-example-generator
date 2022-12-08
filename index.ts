@@ -20,7 +20,7 @@ program.parse(process.argv);
 const options = program.opts();
 
 const envParserOptions: IEnvParserOptions = {
-  emptyValue: options.empty || true,
+  emptyValue: options.empty || false,
   comments: options.comments || false,
   lineSpace: options.linespace || 1,
   slug: options.slug || "YOUR",

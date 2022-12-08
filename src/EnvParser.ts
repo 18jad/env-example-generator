@@ -24,7 +24,7 @@ export class EnvParser {
     this.absolutePath = null;
     this.fileContent = null;
     this.options = options || {
-      emptyValue: true,
+      emptyValue: false,
       lineSpace: 1,
       comments: false,
       slug: "YOUR",
@@ -114,7 +114,7 @@ export class EnvParser {
     let lineSpace = this.options?.lineSpace ? this.options?.lineSpace : 1,
       spaces = "\n";
     if (lineSpace < 0) throw new ParserError("lineSpace cannot be less than 0");
-    for (let i = 1; i < lineSpace; i++) {
+    for (let i = 0; i < lineSpace; i++) {
       spaces += "\n";
     }
     Object.keys(envMap).forEach((key) => {
