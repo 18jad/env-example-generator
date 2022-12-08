@@ -108,4 +108,26 @@ export class EnvParser {
     });
     return env;
   };
+
+  private writeExample = (envMap: IParsedData) => {
+    let fileContent = "";
+    let lineSpace = this.options?.lineSpace ? this.options?.lineSpace : 1,
+      spaces = "\n";
+    if (lineSpace < 0) throw new ParserError("lineSpace cannot be less than 0");
+    for (let i = 1; i < lineSpace; i++) {
+      spaces += "\n";
+    }
+    Object.keys(envMap).forEach((key) => {
+      fileContent += this.isComment(key)
+        ? key
+        : `${key}=${envMap[key]}${spaces}`;
+    });
+    if (this.absolutePath) {
+      const examplePath = this.absolutePath.replace(".env", ".env.example");
+      fs.writeFile(examplePath, fileContent.trim(), (err) => {
+        if (err) throw err;
+        console.log(`✅ Example file created at: ${examplePath}`);
+      });
+    }
+  };
 }
