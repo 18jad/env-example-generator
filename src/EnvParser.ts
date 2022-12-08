@@ -117,11 +117,19 @@ export class EnvParser {
     for (let i = 0; i < lineSpace; i++) {
       spaces += "\r";
     }
-    Object.keys(envMap).forEach((key) => {
-      fileContent += this.isComment(key)
-        ? `${key}`
-        : `${key}=${envMap[key]}${spaces}`;
-    });
+    const keys = Object.keys(envMap);
+    for (let i = 0; i < keys.length; ++i) {
+      const key = keys[i];
+      // ignore line and next line
+      if (key.split("#")[1]?.trim() == "ignore") {
+        i++;
+      } else {
+        fileContent += this.isComment(key)
+          ? `${key}`
+          : `${key}=${envMap[key]}${spaces}`;
+      }
+    }
+
     if (this.absolutePath) {
       const examplePath = this.absolutePath.replace(".env", ".env.example");
       fs.writeFile(
