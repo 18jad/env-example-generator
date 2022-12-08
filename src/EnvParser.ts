@@ -149,7 +149,7 @@ export class EnvParser {
       } else {
         fileContent += this.isComment(key)
           ? `${key}`
-          : `${key}=${envMap[key]}${spaces}`;
+          : `${key}= ${envMap[key]}${spaces}`;
       }
     }
 
