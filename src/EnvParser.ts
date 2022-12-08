@@ -49,4 +49,12 @@ export class EnvParser {
     }
     return true;
   };
+
+  private checkFileContent = (path: string) => {
+    const fileContent = fs.readFileSync(path, "utf8");
+    if (!fileContent) {
+      throw new ParserError("File is empty");
+    }
+    return true;
+  };
 }
