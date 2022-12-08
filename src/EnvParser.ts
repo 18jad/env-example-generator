@@ -1,3 +1,6 @@
+import * as fs from "fs";
+import { ParserError } from "./ParserError";
+
 export interface IEnvParserOptions {
   emptyValue?: boolean;
   lineSpace?: number;
@@ -22,4 +25,14 @@ export class EnvParser {
       slug: "YOUR",
     };
   }
+
+  private checkPath = (path: string) => {
+    if (!path) {
+      throw new ParserError("Path is empty");
+    }
+    if (!fs.existsSync(path)) {
+      throw new ParserError(`Path: "${this.absolutePath}" does not exist`);
+    }
+    return true;
+  };
 }
