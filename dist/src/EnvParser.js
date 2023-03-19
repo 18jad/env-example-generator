@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EnvParser = void 0;
 const fs = __importStar(require("fs"));
@@ -29,16 +38,24 @@ const p = __importStar(require("path"));
 const ParserError_1 = require("./ParserError");
 class EnvParser {
     constructor(options) {
-        this.extension = ".env";
         this.saveAs = ".env.example";
+        this.extension = ".env";
+        /**
+         * Check if path is valid, if path is empty, and current directory contain a .env resolve it as path
+         * @param path: string
+         * @returns
+         */
         this.checkPath = (path) => {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
                 if (!path || path == "") {
+                    // Set current directory as path
                     const currentDir = `${p.resolve(".")}\\${this.extension}`;
-                    if (this.checkFile(currentDir)) {
+                    // Check if there's any .env file in the current directory
+                    const checkFile = yield this.checkFile(currentDir);
+                    if (checkFile) {
                         resolve(currentDir);
                     }
-                    reject("Path is empty");
+                    reject("No .env file found in current directory");
                 }
                 else {
                     if (!fs.existsSync(path)) {
@@ -46,27 +63,49 @@ class EnvParser {
                     }
                 }
                 resolve(path);
-            });
+            }));
         };
-        this.checkFile = (path) => {
-            if (!fs.lstatSync(path).isFile()) {
-                throw new ParserError_1.ParserError(`Path: "${this.absolutePath}" is not a file`);
-            }
-            return true;
-        };
+        /**
+         * Check if a file path exists
+         * @param path: string
+         * @returns
+         */
+        this.checkFile = (path) => __awaiter(this, void 0, void 0, function* () {
+            return fs.promises
+                .access(path, fs.constants.F_OK)
+                .then(() => true)
+                .catch(() => false);
+        });
+        /**
+         * Check if the file extension is .env
+         * @param path: string
+         * @returns
+         */
         this.checkExtension = (path) => {
-            if (path.split(".").pop() !== "env") {
-                throw new ParserError_1.ParserError(`Path: "${this.absolutePath}" is not a .env file`);
+            if (!path.endsWith(this.extension)) {
+                throw new ParserError_1.ParserError("File extension is not .env");
             }
             return true;
         };
-        this.checkFileContent = (path) => {
-            const fileContent = fs.readFileSync(path, "utf8");
-            if (!fileContent) {
-                throw new ParserError_1.ParserError("File is empty");
+        /**
+         * Check if the file is empty
+         * @param path: string
+         * @returns
+         */
+        this.checkIfEmpty = (path) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const stats = yield fs.promises.stat(path);
+                return stats.size === 0;
             }
-            return true;
-        };
+            catch (_a) {
+                return false;
+            }
+        });
+        /**
+         * Test all the conditions and return the absolute path
+         * @param path
+         * @returns: absolutePath: Promise<string>
+         */
         this.verify = (path) => {
             return new Promise((resolve, reject) => {
                 this.path = path;
@@ -76,7 +115,7 @@ class EnvParser {
                         .then((resolvedPath) => {
                         this.checkFile(resolvedPath);
                         this.checkExtension(resolvedPath);
-                        this.checkFileContent(resolvedPath);
+                        this.checkIfEmpty(resolvedPath);
                         this.absolutePath = resolvedPath;
                     })
                         .then(() => {
@@ -112,7 +151,7 @@ class EnvParser {
             const env = {};
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
-                const [key, _] = line.split("=");
+                const [key] = line.split("=");
                 // bad way to implement this, but it is what it is
                 if (key.trim() == "@ignore") {
                     i++;
@@ -154,7 +193,7 @@ class EnvParser {
                 const examplePath = this.absolutePath.replace(this.extension, this.saveAs);
                 fs.writeFile(examplePath, fileContent.trim(), {
                     encoding: "utf8",
-                    flag: "w+",
+                    flag: "w+"
                 }, (err) => {
                     if (err)
                         throw err;
@@ -179,7 +218,7 @@ class EnvParser {
             emptyValue: false,
             lineSpace: 1,
             comments: false,
-            slug: "YOUR",
+            slug: "YOUR"
         };
     }
 }

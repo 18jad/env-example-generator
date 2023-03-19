@@ -2,26 +2,30 @@ import * as fs from "fs";
 import * as p from "path";
 import { ParserError } from "./ParserError";
 
-export interface IEnvParserOptions {
+/**
+ * Options for the EnvParser class
+ */
+export type EnvParserOptions = {
   emptyValue?: boolean;
   lineSpace?: number;
   comments?: boolean;
   slug?: string;
-}
+};
 
-interface IParsedData {
-  [key: string]: string;
-}
+/**
+ * An object representing the parsed .env file data
+ */
+type EnvData = Record<string, string>;
 
 export class EnvParser {
   public path: string | null;
   public absolutePath: string | null;
   public fileContent: string | null;
-  public options: IEnvParserOptions;
+  public options: EnvParserOptions;
+  private saveAs: string = ".env.example";
   private readonly extension: string = ".env";
-  private readonly saveAs: string = ".env.example";
 
-  constructor(options?: IEnvParserOptions) {
+  constructor(options?: EnvParserOptions) {
     this.path = null;
     this.absolutePath = null;
     this.fileContent = null;
@@ -29,18 +33,27 @@ export class EnvParser {
       emptyValue: false,
       lineSpace: 1,
       comments: false,
-      slug: "YOUR",
+      slug: "YOUR"
     };
   }
 
+  /**
+   * Check if path is valid, if path is empty, and current directory contain a .env resolve it as path
+   * @param path: string
+   * @returns
+   */
   private checkPath = (path: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (!path || path == "") {
+        // Set current directory as path
         const currentDir = `${p.resolve(".")}\\${this.extension}`;
-        if (this.checkFile(currentDir)) {
+        // Check if there's any .env file in the current directory
+        const checkFile = await this.checkFile(currentDir);
+
+        if (checkFile) {
           resolve(currentDir);
         }
-        reject("Path is empty");
+        reject("No .env file found in current directory");
       } else {
         if (!fs.existsSync(path)) {
           reject(`Path: "${this.absolutePath}" does not exist`);
@@ -50,28 +63,50 @@ export class EnvParser {
     });
   };
 
-  private checkFile = (path: string) => {
-    if (!fs.lstatSync(path).isFile()) {
-      throw new ParserError(`Path: "${this.absolutePath}" is not a file`);
-    }
-    return true;
+  /**
+   * Check if a file path exists
+   * @param path: string
+   * @returns
+   */
+  private checkFile = async (path: string) => {
+    return fs.promises
+      .access(path, fs.constants.F_OK)
+      .then(() => true)
+      .catch(() => false);
   };
 
+  /**
+   * Check if the file extension is .env
+   * @param path: string
+   * @returns
+   */
   private checkExtension = (path: string) => {
-    if (path.split(".").pop() !== "env") {
-      throw new ParserError(`Path: "${this.absolutePath}" is not a .env file`);
+    if (!path.endsWith(this.extension)) {
+      throw new ParserError("File extension is not .env");
     }
+
     return true;
   };
 
-  private checkFileContent = (path: string) => {
-    const fileContent = fs.readFileSync(path, "utf8");
-    if (!fileContent) {
-      throw new ParserError("File is empty");
+  /**
+   * Check if the file is empty
+   * @param path: string
+   * @returns
+   */
+  private checkIfEmpty = async (path: string) => {
+    try {
+      const stats = await fs.promises.stat(path);
+      return stats.size === 0;
+    } catch {
+      return false;
     }
-    return true;
   };
 
+  /**
+   * Test all the conditions and return the absolute path
+   * @param path
+   * @returns: absolutePath: Promise<string>
+   */
   private verify = (path: string): Promise<string> => {
     return new Promise<string>((resolve, reject) => {
       this.path = path;
@@ -81,7 +116,7 @@ export class EnvParser {
           .then((resolvedPath: string) => {
             this.checkFile(resolvedPath);
             this.checkExtension(resolvedPath);
-            this.checkFileContent(resolvedPath);
+            this.checkIfEmpty(resolvedPath);
             this.absolutePath = resolvedPath;
           })
           .then(() => {
@@ -111,15 +146,15 @@ export class EnvParser {
   };
 
   private parseEnv = (path: string) => {
-    const fileContent: string = fs.readFileSync(path, "utf8");
-    let lines: Array<string> = this.cleanEmptySpaces(fileContent.split("\n"));
+    const fileContent = fs.readFileSync(path, "utf8");
+    let lines = this.cleanEmptySpaces(fileContent.split("\n"));
     if (!this.options?.comments) {
       lines = this.cleanComments(lines);
     }
-    const env: IParsedData = {};
+    const env: EnvData = {};
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const [key, _] = line.split("=");
+      const [key] = line.split("=");
       // bad way to implement this, but it is what it is
       if (key.trim() == "@ignore") {
         i++;
@@ -134,7 +169,7 @@ export class EnvParser {
     return env;
   };
 
-  private writeExample = (envMap: IParsedData) => {
+  private writeExample = (envMap: EnvData) => {
     let fileContent = "";
     let lineSpace = this.options?.lineSpace ? this.options?.lineSpace : 1,
       spaces = "\r\n"; // \r\n to avoid characters errors
@@ -160,19 +195,19 @@ export class EnvParser {
         this.absolutePath = p.resolve(this.absolutePath);
       const examplePath = this.absolutePath.replace(
         this.extension,
-        this.saveAs,
+        this.saveAs
       );
       fs.writeFile(
         examplePath,
         fileContent.trim(),
         {
           encoding: "utf8",
-          flag: "w+",
+          flag: "w+"
         },
         (err) => {
           if (err) throw err;
           console.log(`✅ Example file created at: ${examplePath}`);
-        },
+        }
       );
     }
   };

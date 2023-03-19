@@ -15,7 +15,7 @@ const envParserOptions = {
     emptyValue: options.empty || false,
     comments: options.comments || false,
     lineSpace: options.linespace || 1,
-    slug: options.slug || "YOUR",
+    slug: options.slug || "YOUR"
 };
 const parser = new EnvParser_1.EnvParser(envParserOptions);
 parser.parse(options.path || "");

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { program } from "commander";
-import { EnvParser, IEnvParserOptions } from "./src/EnvParser";
+import { EnvParser, EnvParserOptions } from "./src/EnvParser";
 
 program.version("0.0.1").description("Parse .env file into .env.example");
 
@@ -19,11 +19,11 @@ program.parse(process.argv);
 
 const options = program.opts();
 
-const envParserOptions: IEnvParserOptions = {
+const envParserOptions: EnvParserOptions = {
   emptyValue: options.empty || false,
   comments: options.comments || false,
   lineSpace: options.linespace || 1,
-  slug: options.slug || "YOUR",
+  slug: options.slug || "YOUR"
 };
 
 const parser = new EnvParser(envParserOptions);

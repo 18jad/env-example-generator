@@ -14,7 +14,8 @@
     "start": "ts-node index.ts",
     "start:dev": "nodemon --watch . --exec ts-node index.ts",
     "build": "rm -rf dist/ && npm run build:tsc",
-    "build:tsc": "tsc"
+    "build:tsc": "tsc",
+    "build:local": "npm run build && npm pack && npm install -g enveg-0.1.0.tgz"
   },
   "keywords": [
     "env",
@@ -29,9 +30,11 @@
   ],
   "author": "Jad Yahya",
   "license": "MIT",
+  "dependencies": {
+    "commander": "^9.4.1"
+  },
   "devDependencies": {
     "@types/node": "^18.11.11",
-    "commander": "^9.4.1",
     "ts-node": "^10.9.1",
     "typescript": ">=2.7"
   }
