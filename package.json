@@ -1,7 +1,7 @@
 {
   "name": "enveg",
   "repository": "github:18jad/enveg",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple generator to generate environment variables example file.",
   "main": "dist/index.js",
   "bin": {
